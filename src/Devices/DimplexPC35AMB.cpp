@@ -29,6 +29,10 @@ bool DimplexPC35AMB::turnOn() {
 
     irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
 
+    // send twice for extra reliability
+    delay(500);
+    irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
+
     return true;
 }
 
@@ -43,6 +47,10 @@ bool DimplexPC35AMB::turnOff() {
     };
 
     irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
+
+    delay(500);
+    irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
+
     lastTurnOffTimestamp = timeSource.currentTimestamp();
 
     return true;
