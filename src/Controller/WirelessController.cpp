@@ -24,7 +24,7 @@ void WirelessController::initialize() {
 
 void ACC::Controller::WirelessController::process() {
     if (dataStream.available()) {
-        short int address;
+        unsigned short address;
         if (dataStream.readBytes(static_cast<char *>(static_cast<void *>(&address)), sizeof address) !=
             sizeof address) {
             // unable ro read address, broken transmission?
@@ -37,7 +37,7 @@ void ACC::Controller::WirelessController::process() {
             return;
         }
 
-        short int command;
+        unsigned short command;
         if (dataStream.readBytes(static_cast<char *>(static_cast<void *>(&command)), sizeof address) !=
             sizeof address) {
             // unable to read command, broken transmission?
