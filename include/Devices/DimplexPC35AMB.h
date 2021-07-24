@@ -34,7 +34,7 @@ namespace ACC::Devices {
              * Initializes the Device
              */
             void initialize() {
-                irEmitter.begin(irPin, true, LED_BUILTIN);
+                irEmitter.begin(irPin, false);
             }
 
             /**
