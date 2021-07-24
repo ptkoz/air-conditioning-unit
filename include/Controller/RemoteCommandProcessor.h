@@ -16,18 +16,18 @@ namespace ACC::Controller {
             static constexpr unsigned short turnOnCommand = 0x01;
             static constexpr unsigned short turnOffCommand = 0x02;
 
-            Stream & dataStream;
+            Stream & stream;
             unsigned char setPin;
 
             Devices::AirConditioner & airConditioner;
 
         public:
             explicit RemoteCommandProcessor(
-                Stream & dataStream,
+                Stream & stream,
                 unsigned char setPin,
                 Devices::AirConditioner & airConditioner
             ):
-                dataStream(dataStream),
+                stream(stream),
                 setPin(setPin),
                 airConditioner(airConditioner) {}
 
