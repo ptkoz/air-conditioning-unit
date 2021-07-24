@@ -1,9 +1,9 @@
 #include <Arduino.h>
-#include "Controller/WirelessController.h"
+#include "Controller/RemoteCommandProcessor.h"
 
-using ACC::Controller::WirelessController;
+using ACC::Controller::RemoteCommandProcessor;
 
-void WirelessController::initialize() {
+void RemoteCommandProcessor::initialize() {
     pinMode(setPin, OUTPUT);
     digitalWrite(setPin, LOW);
 
@@ -22,7 +22,7 @@ void WirelessController::initialize() {
     dataStream.setTimeout(1000);
 }
 
-void ACC::Controller::WirelessController::process() {
+void ACC::Controller::RemoteCommandProcessor::process() {
     if (dataStream.available()) {
         unsigned short address;
         if (dataStream.readBytes(static_cast<char *>(static_cast<void *>(&address)), sizeof address) !=
@@ -31,7 +31,7 @@ void ACC::Controller::WirelessController::process() {
             return;
         }
 
-        if (address != 0xA2) {
+        if (address != listenAddress) {
             // advance to the end of the message
             dataStream.find((unsigned char) 0);
             return;
@@ -45,12 +45,15 @@ void ACC::Controller::WirelessController::process() {
         }
 
         switch (command) {
-            case 0x01:
+            case turnOnCommand:
                 airConditioner.turnOn();
                 dataStream.find((unsigned char) 0);
                 break;
-            case 0x02:
+            case turnOffCommand:
                 airConditioner.turnOff();
+                dataStream.find((unsigned char) 0);
+                break;
+            default:
                 dataStream.find((unsigned char) 0);
                 break;
         }
