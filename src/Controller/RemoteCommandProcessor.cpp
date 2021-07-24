@@ -43,17 +43,20 @@ void ACC::Controller::RemoteCommandProcessor::process() {
         }
 
         switch (command) {
-            case turnOnCommand:
+            case turnOnCommand: {
                 airConditioner.turnOn();
                 stream.find((unsigned char) 0);
                 break;
-            case turnOffCommand:
+            }
+            case turnOffCommand: {
                 airConditioner.turnOff();
                 stream.find((unsigned char) 0);
                 break;
-            default:
+            }
+            default: {
                 stream.find((unsigned char) 0);
                 break;
+            }
         }
     }
 }
