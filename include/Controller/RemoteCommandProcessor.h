@@ -3,13 +3,13 @@
 
 #include <Stream.h>
 #include "Devices/AirConditioner.h"
-#include "RemoteCommandExecutor.h"
+#include "RemoteCommandRadio.h"
 
 namespace ACC::Controller::RemoteCommand {
     /**
-     * Wireless controller reads remote commands and reacts to them. It can also sent commands to other devices.
+     * Wireless controller reads remote commands and reacts to them
      */
-    class Processor : public Executor {
+    class Processor {
         private:
             /** Address to listen commands for */
             static constexpr unsigned short listenAddress = 0xA2;
@@ -20,31 +20,16 @@ namespace ACC::Controller::RemoteCommand {
             static constexpr unsigned short setHighSpeedCommand = 0x04;
 
             Stream & stream;
-            unsigned char setPin;
-
             Devices::AirConditioner & airConditioner;
-
-            void enterATMode();
-            void leaveATMode();
         public:
             explicit Processor(
-                Stream & stream,
-                unsigned char setPin,
+                const Radio & radio,
                 Devices::AirConditioner & airConditioner
             ):
-                stream(stream),
-                setPin(setPin),
+                stream(radio.getStream()),
                 airConditioner(airConditioner) {}
 
-            void initialize();
             void process();
-
-            void execute(
-                unsigned short address,
-                unsigned short command,
-                const void * message,
-                size_t length
-            ) override;
     };
 }
 
