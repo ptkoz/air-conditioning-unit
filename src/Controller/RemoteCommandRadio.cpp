@@ -12,7 +12,7 @@ void ACC::Controller::RemoteCommand::Radio::initialize() {
     delay(80);
 
     while (stream.available()) {
-        stream.write(stream.read());
+        stream.read();
     }
 
     leaveATMode();
