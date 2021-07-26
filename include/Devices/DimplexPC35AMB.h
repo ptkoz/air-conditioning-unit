@@ -1,5 +1,5 @@
-#ifndef AIR_CONDITIONING_CONTROLLER_DIMPLEXPC35AMB_H
-#define AIR_CONDITIONING_CONTROLLER_DIMPLEXPC35AMB_H
+#ifndef AIR_CONDITIONING_RECEIVER_DIMPLEXPC35AMB_H
+#define AIR_CONDITIONING_RECEIVER_DIMPLEXPC35AMB_H
 
 #include <IRremoteInt.h>
 #include "AirConditioner.h"
@@ -47,7 +47,17 @@ namespace ACC::Devices {
              * Turns off the device
              */
             bool turnOff() override;
+
+            /**
+             * Tries to set AC to low speed
+             */
+            bool setLowSpeed() override;
+
+            /**
+             * Tries to set AC to high speed
+             */
+            bool setHighSpeed() override;
     };
 }
 
-#endif //AIR_CONDITIONING_CONTROLLER_DIMPLEXPC35AMB_H
+#endif //AIR_CONDITIONING_RECEIVER_DIMPLEXPC35AMB_H

@@ -1,17 +1,20 @@
 #include <Arduino.h>
+#include <Controller/PingController.h>
 #include "Controller/RemoteCommandProcessor.h"
 #include "Devices/DimplexPC35AMB.h"
 
 ACC::Time::Source timeSource;
 ACC::Devices::DimplexPC35AMB airConditioner(3, timeSource);
-ACC::Controller::RemoteCommandProcessor controller(Serial, 2, airConditioner);
+ACC::Controller::RemoteCommand::Processor remoteCommandProcessor(Serial, 2, airConditioner);
+ACC::Controller::PingController pingController(timeSource, remoteCommandProcessor, 0xA1U, 0x90U);
 
 void setup() {
     Serial.begin(9600);
     airConditioner.initialize();
-    controller.initialize();
+    remoteCommandProcessor.initialize();
 }
 
 void loop() {
-    controller.process();
+    remoteCommandProcessor.process();
+    pingController.process();
 }
