@@ -4,10 +4,19 @@ void ACC::Controller::RemoteCommand::Executor::execute(
     unsigned short address,
     unsigned short command,
     const void * message,
-    size_t length
+    size_t messageLength
 ) {
-    stream.write(static_cast<const char *>(static_cast<const void *>(&address)), sizeof address);
-    stream.write(static_cast<const char *>(static_cast<const void *>(&command)), sizeof command);
-    stream.write(static_cast<const char *>(message), length);
-    stream.write((char) 0);
+    size_t shortLength = sizeof(unsigned short);
+    unsigned char headerBuffer[2 * shortLength];
+
+    radio.encode(headerBuffer, static_cast<const unsigned char *>(static_cast<const void *>(&address)), shortLength);
+    stream.write(headerBuffer, 2 * shortLength);
+
+    radio.encode(headerBuffer, static_cast<const unsigned char *>(static_cast<const void *>(&command)), shortLength);
+    stream.write(headerBuffer, 2 * shortLength);
+
+    unsigned char messageBuffer[2 * messageLength];
+    radio.encode(messageBuffer, static_cast<const unsigned char *>(message), messageLength);
+    stream.write(messageBuffer, 2 * messageLength);
+    stream.write((char) 0xFF);
 }

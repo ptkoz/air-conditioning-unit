@@ -4,48 +4,55 @@
 using ACC::Controller::RemoteCommand::Processor;
 
 void Processor::process() {
+    size_t shortLength = sizeof(unsigned short);
+    unsigned char buffer[2 * shortLength];
+
     if (stream.available()) {
-        unsigned short address;
-        if (stream.readBytes(static_cast<char *>(static_cast<void *>(&address)), sizeof address) != sizeof address) {
+        if (stream.readBytes(buffer, 2 * shortLength) != 2 * shortLength) {
             // unable ro read address, broken transmission?
             return;
         }
 
+        unsigned short address;
+        radio.decode(static_cast<unsigned char *>(static_cast<void *>(&address)), buffer, shortLength);
+
         if (address != listenAddress) {
             // advance to the end of the message
-            stream.find((unsigned char) 0);
+            stream.find((char) 0xFF);
             return;
         }
 
-        unsigned short command;
-        if (stream.readBytes(static_cast<char *>(static_cast<void *>(&command)), sizeof command) != sizeof command) {
+        if (stream.readBytes(buffer, 2 * shortLength) != 2 * shortLength) {
             // unable to read command, broken transmission?
             return;
         }
 
+        unsigned short command;
+        radio.decode(static_cast<unsigned char *>(static_cast<void *>(&command)), buffer, shortLength);
+
         switch (command) {
             case turnOnCommand: {
                 airConditioner.turnOn();
-                stream.find((unsigned char) 0);
+                stream.find((char) 0xFF);
                 break;
             }
             case turnOffCommand: {
                 airConditioner.turnOff();
-                stream.find((unsigned char) 0);
+                stream.find((char) 0xFF);
                 break;
             }
             case setLowSpeedCommand: {
                 airConditioner.setLowSpeed();
-                stream.find((unsigned char) 0);
+                stream.find((char) 0xFF);
                 break;
             }
             case setHighSpeedCommand: {
                 airConditioner.setHighSpeed();
-                stream.find((unsigned char) 0);
+                stream.find((char) 0xFF);
                 break;
             }
             default: {
-                stream.find((unsigned char) 0);
+                stream.find((char) 0xFF);
                 break;
             }
         }

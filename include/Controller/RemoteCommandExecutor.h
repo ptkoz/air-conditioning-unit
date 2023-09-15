@@ -11,15 +11,16 @@ namespace ACC::Controller::RemoteCommand {
     class Executor {
         private:
             Stream & stream;
+            const Radio & radio;
         public:
             explicit Executor(const Radio & radio):
-                stream(radio.getStream()) {}
+                stream(radio.getStream()), radio(radio) {}
 
             void execute(
                 unsigned short address,
                 unsigned short command,
                 const void * message = nullptr,
-                size_t length = 0
+                size_t messageLength = 0
             );
     };
 }

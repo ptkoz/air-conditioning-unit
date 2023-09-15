@@ -24,6 +24,18 @@ namespace ACC::Controller::RemoteCommand {
             Stream & getStream() const {
                 return stream;
             }
+
+            /**
+             * Encodes message into the output for serial transmission. Please mind output needs to be exactly
+             * twice the size of the data.
+             */
+            void encode(unsigned char * output, const unsigned char * data, size_t dataLength) const;
+
+            /**
+             * Decodes message received through serial into the output. Please mind data needs to be exactly twice
+             * as long as the message output.
+             */
+            void decode(unsigned char * output, const unsigned char * data, size_t outputLength) const;
     };
 }
 

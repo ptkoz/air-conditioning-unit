@@ -31,3 +31,16 @@ void ACC::Controller::RemoteCommand::Radio::leaveATMode() {
     digitalWrite(setPin, LOW);
     delay(80);
 }
+
+void ACC::Controller::RemoteCommand::Radio::encode(unsigned char *output, const unsigned char *data, size_t dataLength) const {
+    for (size_t i = 0; i < dataLength; i++) {
+        output[2 * i] = data[i] >> 4;
+        output[2 * i + 1] = data[i] & 0x0F;
+    }
+}
+
+void ACC::Controller::RemoteCommand::Radio::decode(unsigned char *output, const unsigned char *data, size_t outputLength) const {
+    for (size_t i = 0; i < outputLength; i++) {
+        output[i] = (data[2 * i] << 4) | data[2 * i + 1];
+    }
+}

@@ -20,6 +20,7 @@ namespace ACC::Controller::RemoteCommand {
             static constexpr unsigned short setHighSpeedCommand = 0x04;
 
             Stream & stream;
+            const Radio & radio;
             Devices::AirConditioner & airConditioner;
         public:
             explicit Processor(
@@ -27,6 +28,7 @@ namespace ACC::Controller::RemoteCommand {
                 Devices::AirConditioner & airConditioner
             ):
                 stream(radio.getStream()),
+                radio(radio),
                 airConditioner(airConditioner) {}
 
             void process();
