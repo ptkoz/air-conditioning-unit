@@ -1,58 +1,57 @@
-#include <Arduino.h>
 #include "Controller/RemoteCommandProcessor.h"
+#include "Controller/InboundMessage.h"
 
 using ACC::Controller::RemoteCommand::Processor;
 
 void Processor::process() {
-    size_t shortLength = sizeof(unsigned short);
-    unsigned char buffer[2 * shortLength];
-
     if (stream.available()) {
-        if (stream.readBytes(buffer, 2 * shortLength) != 2 * shortLength) {
-            // unable ro read address, broken transmission?
+
+        stream.setTimeout(5000);
+        unsigned char messageStartMark;
+        if (stream.readBytes(&messageStartMark, 1) != 1) {
+            // unable ro read byte, broken transmission?
             return;
         }
 
-        unsigned short address;
-        radio.decode(static_cast<unsigned char *>(static_cast<void *>(&address)), buffer, shortLength);
-
-        if (address != listenAddress) {
-            // advance to the end of the message
-            stream.find((char) 0xFF);
+        if (messageStartMark != 0xFF) {
+            // skip anything and wait for message beginning
             return;
         }
 
-        if (stream.readBytes(buffer, 2 * shortLength) != 2 * shortLength) {
-            // unable to read command, broken transmission?
+        unsigned char messageSize;
+        if (stream.readBytes(&messageSize, 1) != 1) {
+            // unable ro read byte, broken transmission?
             return;
         }
 
-        unsigned short command;
-        radio.decode(static_cast<unsigned char *>(static_cast<void *>(&command)), buffer, shortLength);
+        stream.setTimeout(10000);
+        unsigned char buffer[messageSize];
+        if (stream.readBytes(buffer, messageSize) != messageSize) {
+            // unable ro read message, broken transmission?
+            return;
+        }
 
-        switch (command) {
+        InboundMessage message(buffer, messageSize);
+        if (message.getRecipient() != 0xA2) {
+            // the message isn't for us, ignore it
+            return;
+        }
+
+        switch (message.getCommand()) {
             case turnOnCommand: {
                 airConditioner.turnOn();
-                stream.find((char) 0xFF);
                 break;
             }
             case turnOffCommand: {
                 airConditioner.turnOff();
-                stream.find((char) 0xFF);
                 break;
             }
             case setLowSpeedCommand: {
                 airConditioner.setLowSpeed();
-                stream.find((char) 0xFF);
                 break;
             }
             case setHighSpeedCommand: {
                 airConditioner.setHighSpeed();
-                stream.find((char) 0xFF);
-                break;
-            }
-            default: {
-                stream.find((char) 0xFF);
                 break;
             }
         }

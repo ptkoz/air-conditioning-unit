@@ -2,10 +2,11 @@
 #define AIR_CONDITIONING_RECEIVER_REMOTECOMMANDRADIO_H
 
 #include <Stream.h>
+#include "OutboundMessage.h"
 
 namespace ACC::Controller::RemoteCommand {
     /**
-     * Radio abstraction layer for processor & executor
+     * Radio abstraction layer for processor & radio
      */
     class Radio {
         private:
@@ -20,22 +21,11 @@ namespace ACC::Controller::RemoteCommand {
                 setPin(setPin) {}
 
             void initialize();
+            void send(const OutboundMessage & message);
 
             Stream & getStream() const {
                 return stream;
             }
-
-            /**
-             * Encodes message into the output for serial transmission. Please mind output needs to be exactly
-             * twice the size of the data.
-             */
-            void encode(unsigned char * output, const unsigned char * data, size_t dataLength) const;
-
-            /**
-             * Decodes message received through serial into the output. Please mind data needs to be exactly twice
-             * as long as the message output.
-             */
-            void decode(unsigned char * output, const unsigned char * data, size_t outputLength) const;
     };
 }
 

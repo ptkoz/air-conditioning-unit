@@ -9,11 +9,14 @@ ACC::Devices::DimplexPC35AMB airConditioner(3, timeSource);
 
 ACC::Controller::RemoteCommand::Radio radio(Serial, 2);
 ACC::Controller::RemoteCommand::Processor remoteCommandProcessor(radio, airConditioner);
-ACC::Controller::RemoteCommand::Executor remoteCommandExecutor(radio);
-ACC::Controller::PingController pingController(timeSource, remoteCommandExecutor, 0xA1U, 0x90U);
+ACC::Controller::PingController pingController(timeSource, radio, 0xA1U, 0x90U);
 
 void setup() {
-    Serial.begin(9600);
+    // Disable internal led for power saving
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, LOW);
+
+    Serial.begin(4800);
     airConditioner.initialize();
     radio.initialize();
 }

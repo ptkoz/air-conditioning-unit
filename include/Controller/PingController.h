@@ -2,7 +2,7 @@
 #define AIR_CONDITIONING_RECEIVER_PINGCONTROLLER_H
 
 #include "Time/Source.h"
-#include "RemoteCommandExecutor.h"
+#include "RemoteCommandRadio.h"
 
 namespace ACC::Controller {
     /**
@@ -17,7 +17,7 @@ namespace ACC::Controller {
             const Time::Source & timeSource;
 
             /** Executor of the remote commands */
-            RemoteCommand::Executor & executor;
+            RemoteCommand::Radio & radio;
 
             /** Where to send ping? */
             const unsigned short recipientAddress;
@@ -31,12 +31,12 @@ namespace ACC::Controller {
         public:
             PingController(
                 const Time::Source & timeSource,
-                RemoteCommand::Executor & executor,
+                RemoteCommand::Radio & radio,
                 unsigned short recipientAddress,
                 unsigned short recipientCommand
             ):
                 timeSource(timeSource),
-                executor(executor),
+                radio(radio),
                 recipientAddress(recipientAddress),
                 recipientCommand(recipientCommand) {}
 

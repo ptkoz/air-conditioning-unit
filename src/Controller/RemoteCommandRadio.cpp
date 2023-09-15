@@ -6,9 +6,11 @@ void ACC::Controller::RemoteCommand::Radio::initialize() {
 
     stream.println("AT+C003");
     delay(80);
-    stream.println("AT+FU1");
+    stream.println("AT+FU3");
     delay(80);
-    stream.println("AT+B9600");
+    stream.println("AT+P8");
+    delay(80);
+    stream.println("AT+B4800");
     delay(80);
 
     while (stream.available()) {
@@ -16,8 +18,6 @@ void ACC::Controller::RemoteCommand::Radio::initialize() {
     }
 
     leaveATMode();
-
-    stream.setTimeout(1000);
 }
 
 void ACC::Controller::RemoteCommand::Radio::enterATMode() {
@@ -32,15 +32,6 @@ void ACC::Controller::RemoteCommand::Radio::leaveATMode() {
     delay(80);
 }
 
-void ACC::Controller::RemoteCommand::Radio::encode(unsigned char *output, const unsigned char *data, size_t dataLength) const {
-    for (size_t i = 0; i < dataLength; i++) {
-        output[2 * i] = data[i] >> 4;
-        output[2 * i + 1] = data[i] & 0x0F;
-    }
-}
-
-void ACC::Controller::RemoteCommand::Radio::decode(unsigned char *output, const unsigned char *data, size_t outputLength) const {
-    for (size_t i = 0; i < outputLength; i++) {
-        output[i] = (data[2 * i] << 4) | data[2 * i + 1];
-    }
+void ACC::Controller::RemoteCommand::Radio::send(const ACC::Controller::RemoteCommand::OutboundMessage &message) {
+    stream.write(message.getEncodedData(), message.getDataLength());
 }
