@@ -7,7 +7,7 @@ InboundMessage::InboundMessage(const unsigned char *input, unsigned char inputLe
     unsigned char result[inputLength];
     unsigned char length = 0;
 
-    for (size_t i = 0; i < inputLength; i++, length++) {
+    for (unsigned char i = 0; i < inputLength; i++, length++) {
         if ((input[i] & 0x80) && (i < inputLength - 1)) {
             result[length] = ((input[i] & 0x0F) << 4) | (input[i + 1]);
             i++;
