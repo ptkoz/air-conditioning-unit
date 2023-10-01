@@ -13,6 +13,7 @@ namespace ACC::Controller::RemoteCommand {
             OutboundMessage(
                 unsigned char address,
                 unsigned char command,
+                unsigned long nounce,
                 const void *message = nullptr,
                 unsigned char messageLength = 0
             );

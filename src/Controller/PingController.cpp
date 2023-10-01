@@ -3,7 +3,7 @@
 
 void ACC::Controller::PingController::process() {
     if (lastPing.getMinAgeSeconds() > interval) {
-        radio.send(ACC::Controller::RemoteCommand::OutboundMessage(recipientAddress, recipientCommand));
+        radio.send(ACC::Controller::RemoteCommand::OutboundMessage(recipientAddress, recipientCommand, 0));
         lastPing = timeSource.currentTimestamp();
     }
 }

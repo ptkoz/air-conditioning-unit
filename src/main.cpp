@@ -1,8 +1,11 @@
+#ifndef PIO_UNIT_TESTING
+
 #include <Arduino.h>
 #include <Controller/PingController.h>
 #include <Controller/RemoteCommandRadio.h>
 #include "Controller/RemoteCommandProcessor.h"
 #include "Devices/DimplexPC35AMB.h"
+
 
 ACC::Time::Source timeSource;
 ACC::Devices::DimplexPC35AMB airConditioner(3, timeSource);
@@ -25,3 +28,5 @@ void loop() {
     remoteCommandProcessor.process();
     pingController.process();
 }
+
+#endif

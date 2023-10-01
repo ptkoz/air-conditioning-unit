@@ -1,22 +1,26 @@
 #include "Controller/OutboundMessage.h"
 #include "Arduino.h"
+#include "BLAKE2s.h"
+#include "secrets.h"
 
 ACC::Controller::RemoteCommand::OutboundMessage::OutboundMessage(
     unsigned char address,
     unsigned char command,
+    unsigned long nounce,
     const void *message,
     unsigned char messageLength
 ) {
-    if (messageLength > 120) {
-        // Having 255 byte limit for the whole message, we can't afford unencoded messages longer than 120 bytes. Strip
+    if (messageLength > 100) {
+        // Having 255 byte limit for the whole message, we can't afford unencoded messages longer than 100 bytes. Strip
         // the whole data to prevent buffer overflows.
         messageLength = 0;
     }
 
-    // message has address, command and then remaining, optional part
-    unsigned char wholeMessageLength = 2 + messageLength;
-    // 2 times the message + message start byte + message length
-    unsigned char maxEncodedMessageLength = 2 * wholeMessageLength + 2;
+    // 16 bytes for hmac + 4 bytes for nounce + 1 byte for address + 1 byte for command + actual message bytes
+    unsigned char wholeMessageLength = 22 + messageLength;
+    // 1 byte for message start marker + 1 byte for remaining message length + worst case scenario for encoded bytes
+    // (when each message bytes is encoded on 2 chars to leave 2 highest bits 0)
+    unsigned char maxEncodedMessageLength = 2 + 2 * wholeMessageLength;
 
     // create buffer for encoded message
     encodedData = new unsigned char[maxEncodedMessageLength];
@@ -24,9 +28,15 @@ ACC::Controller::RemoteCommand::OutboundMessage::OutboundMessage(
     encodedData[0] = 0xFF;
 
     unsigned char wholeMessage[wholeMessageLength];
-    wholeMessage[0] = address;
-    wholeMessage[1] = command;
-    memcpy(&wholeMessage[2], message, messageLength);
+    memcpy(&wholeMessage[16], &nounce, 4);
+    wholeMessage[20] = address;
+    wholeMessage[21] = command;
+    memcpy(&wholeMessage[22], message, messageLength);
+
+    BLAKE2s blake;
+    blake.reset(ACC::Secrets::HMAC_KEY, ACC::Secrets::HMAC_KEY_LENGTH, 16);
+    blake.update(&wholeMessage[16], wholeMessageLength - 16);
+    blake.finalize(wholeMessage, 16);
 
     unsigned char addedBytes = 0;
     for (size_t i = 0; i < wholeMessageLength; i++) {

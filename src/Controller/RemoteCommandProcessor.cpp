@@ -32,8 +32,8 @@ void Processor::process() {
         }
 
         InboundMessage message(buffer, messageSize);
-        if (message.getRecipient() != 0xA2) {
-            // the message isn't for us, ignore it
+        if (message.getRecipient() != 0xA2 || !message.isValid(0)) {
+            // the message isn't for us or is invalid, ignore it
             return;
         }
 

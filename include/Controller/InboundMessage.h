@@ -9,6 +9,8 @@ namespace ACC::Controller::RemoteCommand {
         private:
             unsigned char recipient;
             unsigned char command;
+            unsigned long nounce;
+            bool isHmacValid;
             unsigned char *data;
             unsigned char dataLength;
 
@@ -20,6 +22,7 @@ namespace ACC::Controller::RemoteCommand {
             unsigned char getCommand() const { return command; }
             const unsigned char * getData() const { return data; }
             unsigned char getDataLength() const { return dataLength; }
+            bool isValid(unsigned long lastInputNounce);
     };
 }
 
