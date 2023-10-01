@@ -1,5 +1,5 @@
-#ifndef AIR_CONDITIONING_SENSOR_OUTBOUNDMESSAGE_H
-#define AIR_CONDITIONING_SENSOR_OUTBOUNDMESSAGE_H
+#ifndef AIR_CONDITIONING_UNIT_OUTBOUNDMESSAGE_H
+#define AIR_CONDITIONING_UNIT_OUTBOUNDMESSAGE_H
 
 namespace ACC::Controller::RemoteCommand {
     /**
@@ -7,26 +7,28 @@ namespace ACC::Controller::RemoteCommand {
      */
     class OutboundMessage {
         private:
-            unsigned char *encodedData;
+            unsigned char * encodedBytes;
 
         public:
             OutboundMessage(
-                unsigned char address,
+                unsigned char from,
+                unsigned char to,
                 unsigned char command,
-                const void *message = nullptr,
-                unsigned char messageLength = 0
+                unsigned long nounce,
+                const void *extended = nullptr,
+                unsigned char extendedLength = 0
             );
 
             ~OutboundMessage();
 
-            const unsigned char *getEncodedData() const {
-                return encodedData;
+            const unsigned char *getEncodedBytes() const {
+                return encodedBytes;
             }
 
-            unsigned char getDataLength() const {
-                return encodedData[1] + 2; // the actual message + start marker + length
+            unsigned char getLength() const {
+                return encodedBytes[1] + 2; // the actual message bytes + start marker byte + length byte
             }
     };
 }
 
-#endif //AIR_CONDITIONING_SENSOR_OUTBOUNDMESSAGE_H
+#endif //AIR_CONDITIONING_UNIT_OUTBOUNDMESSAGE_H

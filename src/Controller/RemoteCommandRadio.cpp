@@ -33,5 +33,5 @@ void ACC::Controller::RemoteCommand::Radio::leaveATMode() {
 }
 
 void ACC::Controller::RemoteCommand::Radio::send(const ACC::Controller::RemoteCommand::OutboundMessage &message) {
-    stream.write(message.getEncodedData(), message.getDataLength());
+    stream.write(message.getEncodedBytes(), message.getLength());
 }

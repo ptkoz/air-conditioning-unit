@@ -32,26 +32,18 @@ void Processor::process() {
         }
 
         InboundMessage message(buffer, messageSize);
-        if (message.getRecipient() != 0xA2) {
-            // the message isn't for us, ignore it
+        if (message.getToAddress() != listenAddress || !message.isValid(0)) {
+            // the message isn't for us or is invalid, ignore it
             return;
         }
 
         switch (message.getCommand()) {
             case turnOnCommand: {
-                airConditioner.turnOn();
+                controlledDevice.turnOn();
                 break;
             }
             case turnOffCommand: {
-                airConditioner.turnOff();
-                break;
-            }
-            case setLowSpeedCommand: {
-                airConditioner.setLowSpeed();
-                break;
-            }
-            case setHighSpeedCommand: {
-                airConditioner.setHighSpeed();
+                controlledDevice.turnOff();
                 break;
             }
         }

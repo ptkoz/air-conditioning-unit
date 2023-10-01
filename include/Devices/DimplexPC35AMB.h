@@ -1,15 +1,15 @@
-#ifndef AIR_CONDITIONING_RECEIVER_DIMPLEXPC35AMB_H
-#define AIR_CONDITIONING_RECEIVER_DIMPLEXPC35AMB_H
+#ifndef AIR_CONDITIONING_UNIT_DIMPLEXPC35AMB_H
+#define AIR_CONDITIONING_UNIT_DIMPLEXPC35AMB_H
 
 #include <IRremoteInt.h>
-#include "AirConditioner.h"
+#include "Device.h"
 #include "Time/Source.h"
 
 namespace ACC::Devices {
     /**
      * Air conditioner implementation for Dimplex device
      */
-    class DimplexPC35AMB : public AirConditioner {
+    class DimplexPC35AMB : public Device {
         private:
             /** IR Emitter frequency */
             static constexpr unsigned char irFrequency = 38;
@@ -27,6 +27,8 @@ namespace ACC::Devices {
 
             /** The timestamp of the last turn off */
             Time::Timestamp lastTurnOffTimestamp;
+
+            bool isTurnedOn;
         public:
             explicit DimplexPC35AMB(unsigned char irPin, const Time::Source & timeSource);
 
@@ -49,15 +51,22 @@ namespace ACC::Devices {
             bool turnOff() override;
 
             /**
+             * Checks whether device is currently working
+             */
+            bool isWorking() override {
+                return isTurnedOn;
+            }
+
+            /**
              * Tries to set AC to low speed
              */
-            bool setLowSpeed() override;
+            bool setLowSpeed();
 
             /**
              * Tries to set AC to high speed
              */
-            bool setHighSpeed() override;
+            bool setHighSpeed();
     };
 }
 
-#endif //AIR_CONDITIONING_RECEIVER_DIMPLEXPC35AMB_H
+#endif //AIR_CONDITIONING_UNIT_DIMPLEXPC35AMB_H

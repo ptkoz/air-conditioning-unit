@@ -7,19 +7,30 @@ namespace ACC::Controller::RemoteCommand {
      */
     class InboundMessage {
         private:
-            unsigned char recipient;
+            unsigned char fromAddress;
+            unsigned char toAddress;
             unsigned char command;
-            unsigned char *data;
-            unsigned char dataLength;
+            unsigned long nounce;
+            bool isHmacValid;
+            unsigned char *extendedBytes;
+            unsigned char extendedBytesLength;
 
         public:
             InboundMessage(const unsigned char *input, unsigned char inputLength);
+
             ~InboundMessage();
 
-            unsigned char getRecipient() const { return recipient; }
+            unsigned char getFromAddress() const { return fromAddress; }
+
+            unsigned char getToAddress() const { return toAddress; }
+
             unsigned char getCommand() const { return command; }
-            const unsigned char * getData() const { return data; }
-            unsigned char getDataLength() const { return dataLength; }
+
+            const unsigned char *getExtendedBytes() const { return extendedBytes; }
+
+            unsigned char getExtendedBytesLength() const { return extendedBytesLength; }
+
+            bool isValid(unsigned long lastInputNounce) const;
     };
 }
 

@@ -1,8 +1,8 @@
-#ifndef AIR_CONDITIONING_RECEIVER_REMOTECOMMANDPROCESSOR_H
-#define AIR_CONDITIONING_RECEIVER_REMOTECOMMANDPROCESSOR_H
+#ifndef AIR_CONDITIONING_UNIT_REMOTECOMMANDPROCESSOR_H
+#define AIR_CONDITIONING_UNIT_REMOTECOMMANDPROCESSOR_H
 
 #include <Stream.h>
-#include "Devices/AirConditioner.h"
+#include "Devices/Device.h"
 #include "RemoteCommandRadio.h"
 
 namespace ACC::Controller::RemoteCommand {
@@ -11,28 +11,26 @@ namespace ACC::Controller::RemoteCommand {
      */
     class Processor {
         private:
-            /** Address to listen commands for */
-            static constexpr unsigned short listenAddress = 0xA2;
-            /** Recognized command codes */
-            static constexpr unsigned short turnOnCommand = 0x01;
-            static constexpr unsigned short turnOffCommand = 0x02;
-            static constexpr unsigned short setLowSpeedCommand = 0x03;
-            static constexpr unsigned short setHighSpeedCommand = 0x04;
+            Stream &stream;
+            Devices::Device &controlledDevice;
 
-            Stream & stream;
-            const Radio & radio;
-            Devices::AirConditioner & airConditioner;
+            /** Address to listen commands for */
+            unsigned char listenAddress;
+            /** Recognized command codes */
+            static constexpr unsigned char turnOnCommand = 0x01U;
+            static constexpr unsigned char turnOffCommand = 0x02U;
         public:
             explicit Processor(
-                const Radio & radio,
-                Devices::AirConditioner & airConditioner
-            ):
+                const Radio &radio,
+                Devices::Device &controlledDevice,
+                unsigned char listenAddress
+            ) :
                 stream(radio.getStream()),
-                radio(radio),
-                airConditioner(airConditioner) {}
+                controlledDevice(controlledDevice),
+                listenAddress(listenAddress) {}
 
             void process();
     };
 }
 
-#endif //AIR_CONDITIONING_RECEIVER_REMOTECOMMANDPROCESSOR_H
+#endif //AIR_CONDITIONING_UNIT_REMOTECOMMANDPROCESSOR_H

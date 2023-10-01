@@ -1,8 +1,9 @@
-#ifndef AIR_CONDITIONING_RECEIVER_PINGCONTROLLER_H
-#define AIR_CONDITIONING_RECEIVER_PINGCONTROLLER_H
+#ifndef AIR_CONDITIONING_UNIT_PINGCONTROLLER_H
+#define AIR_CONDITIONING_UNIT_PINGCONTROLLER_H
 
 #include "Time/Source.h"
 #include "RemoteCommandRadio.h"
+#include "Devices/Device.h"
 
 namespace ACC::Controller {
     /**
@@ -16,14 +17,20 @@ namespace ACC::Controller {
             /** Reliable time source */
             const Time::Source & timeSource;
 
-            /** Executor of the remote commands */
+            /** Transport for the ping messages */
             RemoteCommand::Radio & radio;
 
-            /** Where to send ping? */
-            const unsigned short recipientAddress;
+            /** Device that is being controlled */
+            Devices::Device & controlledDevice;
+
+            /** Where are the pings sent from? */
+            const unsigned char fromAddress;
+
+            /** Where we send pings to? */
+            const unsigned char toAddress;
 
             /** What is the ping command? */
-            const unsigned short recipientCommand;
+            const unsigned char pingCommand;
 
             /** Timestamp of last sent ping (initialize with negative value to send immediately on power up */
             Time::Timestamp lastPing = Time::Timestamp(-interval);
@@ -32,16 +39,21 @@ namespace ACC::Controller {
             PingController(
                 const Time::Source & timeSource,
                 RemoteCommand::Radio & radio,
-                unsigned short recipientAddress,
-                unsigned short recipientCommand
+                Devices::Device & controlledDevice,
+                unsigned char fromAddress,
+                unsigned char toAddress,
+                unsigned char pingCommand
             ):
                 timeSource(timeSource),
                 radio(radio),
-                recipientAddress(recipientAddress),
-                recipientCommand(recipientCommand) {}
+                controlledDevice(controlledDevice),
+                fromAddress(fromAddress),
+                toAddress(toAddress),
+                pingCommand(pingCommand) {}
 
             void process();
+
     };
 }
 
-#endif //AIR_CONDITIONING_RECEIVER_PINGCONTROLLER_H
+#endif //AIR_CONDITIONING_UNIT_PINGCONTROLLER_H
