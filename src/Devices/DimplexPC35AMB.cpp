@@ -33,6 +33,9 @@ bool DimplexPC35AMB::turnOn() {
     };
 
     irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
+    delay(500);
+    irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency); // twice for extra reliability
+
     isTurnedOn = true;
 
     return true;
@@ -49,6 +52,9 @@ bool DimplexPC35AMB::turnOff() {
     };
 
     irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
+    delay(500);
+    irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency); // twice for extra reliability
+
     lastTurnOffTimestamp = timeSource.currentTimestamp();
     isTurnedOn = false;
 
@@ -65,7 +71,10 @@ bool DimplexPC35AMB::setLowSpeed() {
             500, 532, 508, 500, 500, 508, 500, 1500, 500, 508, 500, 504, 508, 1496, 500, 1504,
             504, 1588, 504, 1496, 500, 1496, 504, 1496, 500, 1496, 504, 3504, 504
     };
+
     irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
+    delay(500);
+    irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency); // twice for extra reliability
 
     return true;
 }
@@ -79,7 +88,10 @@ bool DimplexPC35AMB::setHighSpeed() {
             508, 500, 508, 500, 500, 504, 504, 504, 508, 1496, 500, 1500, 508, 1588, 504, 1492, 504, 496, 504, 1496,
             504, 1492, 504, 3508, 500
     };
+
     irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency);
+    delay(500);
+    irEmitter.sendRaw(signal, sizeof(signal) / sizeof(signal[0]), irFrequency); // twice for extra reliability
 
     return true;
 }
