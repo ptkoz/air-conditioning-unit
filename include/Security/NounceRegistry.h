@@ -45,10 +45,5 @@ namespace ACC::Security {
              * Records that nounce initialization happened with given values.
              */
             void recordNounceInitialization(unsigned long inboundNounce, unsigned long outboundNounce);
-
-            /**
-             * Resets memory back to when no nounce was persisted
-             */
-            void resetMemory();
     };
 }

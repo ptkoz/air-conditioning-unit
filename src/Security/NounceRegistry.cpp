@@ -17,6 +17,16 @@ NounceRegistry::NounceRegistry(int startByte, unsigned short numBytes)
         EEPROM.get((int) (i * blockSize + startByte), inbound);
         EEPROM.get((int) (i * blockSize + startByte + nounceSize), outbound);
 
+        if (inbound == 4294967295) {
+            // default (max) value encountered
+            inbound = 0;
+        }
+
+        if (outbound == 4294967295) {
+            // default (max) value encountered
+            outbound = 0;
+        }
+
         if (highestInboundNounce <= inbound && highestOutboundNounce <= outbound) {
             highestInboundNounce = inbound;
             highestOutboundNounce = outbound;
@@ -36,12 +46,4 @@ void NounceRegistry::recordNounceInitialization( // NOLINT(*-make-member-functio
     unsigned short nextBlock = (currentBlock + 1) % numBlocks;
     EEPROM.put((int) (nextBlock * blockSize + startByte), inboundNounce);
     EEPROM.put((int) (nextBlock * blockSize + startByte + nounceSize), outboundNounce);
-}
-
-void NounceRegistry::resetMemory() { // NOLINT(*-make-member-function-const)
-    unsigned long zero = 0;
-    for (unsigned short i = 0; i < numBlocks; i++) {
-        EEPROM.put((int) (i * blockSize + startByte), zero);
-        EEPROM.put((int) (i * blockSize + startByte + nounceSize), zero);
-    }
 }
