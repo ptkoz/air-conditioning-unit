@@ -14,10 +14,10 @@ NounceRegistry::NounceRegistry(int startByte, unsigned short numBytes)
 
     for (unsigned short i = 0; i < numBlocks; i++) {
         unsigned long inbound, outbound;
-        EEPROM.get((int)(numBlocks * blockSize + startByte), inbound);
-        EEPROM.get((int)(numBlocks * blockSize + startByte + nounceSize), outbound);
+        EEPROM.get((int) (i * blockSize + startByte), inbound);
+        EEPROM.get((int) (i * blockSize + startByte + nounceSize), outbound);
 
-        if (highestOutboundNounce < inbound && highestOutboundNounce < outbound) {
+        if (highestInboundNounce <= inbound && highestOutboundNounce <= outbound) {
             highestInboundNounce = inbound;
             highestOutboundNounce = outbound;
             currentBlock = i;
@@ -29,8 +29,19 @@ bool NounceRegistry::isNounceUnused(unsigned long inboundNounce, unsigned long o
     return inboundNounce > highestInboundNounce && outboundNounce >= highestOutboundNounce;
 }
 
-void NounceRegistry::recordNounceInitialization(unsigned long inboundNounce, unsigned long outboundNounce) {
+void NounceRegistry::recordNounceInitialization( // NOLINT(*-make-member-function-const)
+    unsigned long inboundNounce,
+    unsigned long outboundNounce
+) {
     unsigned short nextBlock = (currentBlock + 1) % numBlocks;
-    EEPROM.put((int)(nextBlock * blockSize + startByte), inboundNounce);
-    EEPROM.put((int)(nextBlock * blockSize + startByte + nounceSize), outboundNounce);
+    EEPROM.put((int) (nextBlock * blockSize + startByte), inboundNounce);
+    EEPROM.put((int) (nextBlock * blockSize + startByte + nounceSize), outboundNounce);
+}
+
+void NounceRegistry::resetMemory() { // NOLINT(*-make-member-function-const)
+    unsigned long zero = 0;
+    for (unsigned short i = 0; i < numBlocks; i++) {
+        EEPROM.put((int) (i * blockSize + startByte), zero);
+        EEPROM.put((int) (i * blockSize + startByte + nounceSize), zero);
+    }
 }

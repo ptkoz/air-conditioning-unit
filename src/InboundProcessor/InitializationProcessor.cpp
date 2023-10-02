@@ -10,6 +10,7 @@ void InitializationProcessor::process(const Radio::InboundMessage &message) {
 
         if (nounceRegistry.isNounceUnused(message.getNounce(), outboundNounce)) {
             nounceProvider.finalizeInitialization(message.getNounce(), outboundNounce);
+            nounceRegistry.recordNounceInitialization(message.getNounce(), outboundNounce);
         }
     }
 }
