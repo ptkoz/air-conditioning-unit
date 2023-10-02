@@ -15,7 +15,7 @@ void NounceProvider::initialize(
     while (!isInitialized) {
         radio.send(sendRequestTo, requestCommand);
         Time::Timestamp receivingStartTimestamp = timeSource.currentTimestamp();
-        while (!isInitialized && receivingStartTimestamp.getMinAgeSeconds() > 30) {
+        while (!isInitialized && receivingStartTimestamp.getMinAgeSeconds() < 15) {
             radio.receive(initializationProcessor);
         }
     }
