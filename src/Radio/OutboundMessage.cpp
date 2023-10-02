@@ -1,9 +1,11 @@
-#include "Controller/OutboundMessage.h"
 #include "Arduino.h"
 #include "BLAKE2s.h"
-#include "secrets.h"
+#include "Security/secrets.h"
+#include "Radio/OutboundMessage.h"
 
-ACC::Controller::RemoteCommand::OutboundMessage::OutboundMessage(
+using namespace ACC::Radio;
+
+OutboundMessage::OutboundMessage(
     unsigned char from,
     unsigned char to,
     unsigned char command,
@@ -29,7 +31,7 @@ ACC::Controller::RemoteCommand::OutboundMessage::OutboundMessage(
 
     // Put HMAC on first 16 bytes of the message
     BLAKE2s blake;
-    blake.reset(ACC::Secrets::HMAC_KEY, ACC::Secrets::HMAC_KEY_LENGTH, 16);
+    blake.reset(ACC::Security::HMAC_KEY, ACC::Security::HMAC_KEY_LENGTH, 16);
     blake.update(&wholeMessage[16], wholeMessageLength - 16);
     blake.finalize(wholeMessage, 16);
 
@@ -58,6 +60,6 @@ ACC::Controller::RemoteCommand::OutboundMessage::OutboundMessage(
     encodedBytes[1] = wholeMessageLength + addedBytes;
 }
 
-ACC::Controller::RemoteCommand::OutboundMessage::~OutboundMessage() {
+OutboundMessage::~OutboundMessage() {
     delete[] encodedBytes;
 }

@@ -1,5 +1,4 @@
-#ifndef AIR_CONDITIONING_UNIT_SOURCE_H
-#define AIR_CONDITIONING_UNIT_SOURCE_H
+#pragma once
 
 #include "Timestamp.h"
 
@@ -14,5 +13,3 @@ namespace ACC::Time {
             }
     };
 }
-
-#endif //AIR_CONDITIONING_UNIT_SOURCE_H

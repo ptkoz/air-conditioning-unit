@@ -1,13 +1,13 @@
-#ifndef AIR_CONDITIONING_UNIT_PINGCONTROLLER_H
-#define AIR_CONDITIONING_UNIT_PINGCONTROLLER_H
+#pragma once
 
 #include "Time/Source.h"
-#include "RemoteCommandRadio.h"
+#include "Radio/Publisher.h"
 #include "Devices/Device.h"
+#include "Security/NounceProvider.h"
 
 namespace ACC::Controller {
     /**
-     * Class that periodically sends ping to master unit
+     * Controller that periodically sends ping to master unit
      */
     class PingController {
         private:
@@ -15,19 +15,16 @@ namespace ACC::Controller {
             static constexpr unsigned short interval = 60; //seconds
 
             /** Reliable time source */
-            const Time::Source & timeSource;
+            const Time::Source &timeSource;
 
             /** Transport for the ping messages */
-            RemoteCommand::Radio & radio;
+            Radio::Publisher &publisher;
 
             /** Device that is being controlled */
-            Devices::Device & controlledDevice;
-
-            /** Where are the pings sent from? */
-            const unsigned char fromAddress;
+            Devices::Device &controlledDevice;
 
             /** Where we send pings to? */
-            const unsigned char toAddress;
+            const unsigned char sendToAddress;
 
             /** What is the ping command? */
             const unsigned char pingCommand;
@@ -37,23 +34,19 @@ namespace ACC::Controller {
 
         public:
             PingController(
-                const Time::Source & timeSource,
-                RemoteCommand::Radio & radio,
-                Devices::Device & controlledDevice,
-                unsigned char fromAddress,
-                unsigned char toAddress,
+                const Time::Source &timeSource,
+                Radio::Publisher &publisher,
+                Devices::Device &controlledDevice,
+                unsigned char sendToAddress,
                 unsigned char pingCommand
-            ):
+            ) :
                 timeSource(timeSource),
-                radio(radio),
+                publisher(publisher),
                 controlledDevice(controlledDevice),
-                fromAddress(fromAddress),
-                toAddress(toAddress),
+                sendToAddress(sendToAddress),
                 pingCommand(pingCommand) {}
 
             void process();
 
     };
 }
-
-#endif //AIR_CONDITIONING_UNIT_PINGCONTROLLER_H

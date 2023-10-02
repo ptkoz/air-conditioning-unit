@@ -1,9 +1,9 @@
-#include "Controller/InboundMessage.h"
 #include "Arduino.h"
 #include "BLAKE2s.h"
-#include "secrets.h"
+#include "Radio/InboundMessage.h"
+#include "Security/secrets.h"
 
-using namespace ACC::Controller::RemoteCommand;
+using namespace ACC::Radio;
 
 InboundMessage::InboundMessage(const unsigned char *input, unsigned char inputLength)
     : fromAddress(0), toAddress(0), command(0), nounce(0), isHmacValid(false), extendedBytes(nullptr), extendedBytesLength(0) {
@@ -25,7 +25,7 @@ InboundMessage::InboundMessage(const unsigned char *input, unsigned char inputLe
     }
 
     BLAKE2s blake;
-    blake.reset(ACC::Secrets::HMAC_KEY, ACC::Secrets::HMAC_KEY_LENGTH, 16);
+    blake.reset(ACC::Security::HMAC_KEY, ACC::Security::HMAC_KEY_LENGTH, 16);
     blake.update(&result[16], length - 16);
 
     unsigned char hmac[16];
@@ -49,7 +49,7 @@ InboundMessage::~InboundMessage() {
     delete[] extendedBytes;
 }
 
-bool InboundMessage::isValid(unsigned long lastInputNounce) const {
-    return isHmacValid && nounce > lastInputNounce;
+bool InboundMessage::isValid(unsigned long lastInboundNounce) const {
+    return isHmacValid && nounce > lastInboundNounce;
 }
 

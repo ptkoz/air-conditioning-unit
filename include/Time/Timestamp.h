@@ -1,5 +1,4 @@
-#ifndef AIR_CONDITIONING_UNIT_TIMESTAMP_H
-#define AIR_CONDITIONING_UNIT_TIMESTAMP_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -14,18 +13,18 @@ namespace ACC::Time {
             unsigned long millisSinceCpuStart;
 
             /** Construct with arbitrary time */
-            inline explicit Timestamp(unsigned long millisSinceCpuStart):
-                millisSinceCpuStart(millisSinceCpuStart) {}
+            inline explicit Timestamp(unsigned long millisSinceCpuStart)
+                : millisSinceCpuStart(millisSinceCpuStart) {}
 
             /** Construct with "current" time */
-            inline explicit Timestamp():
+            inline explicit Timestamp() :
                 Timestamp(millis()) {}
 
             /** Copy constructor */
-            inline Timestamp(const Timestamp & timestamp) = default;
+            inline Timestamp(const Timestamp &timestamp) = default;
 
             /** Assignment operator */
-            inline Timestamp & operator=(const Timestamp & timestamp) = default;
+            inline Timestamp &operator=(const Timestamp &timestamp) = default;
 
             /**
              * Please bear in mind this is min age, not the precise age. This implementation cannot deliver precise
@@ -46,5 +45,3 @@ namespace ACC::Time {
             }
     };
 }
-
-#endif //AIR_CONDITIONING_UNIT_TIMESTAMP_H

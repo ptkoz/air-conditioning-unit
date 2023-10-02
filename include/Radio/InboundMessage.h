@@ -1,7 +1,6 @@
-#ifndef AIR_CONDITIONING_UNIT_INBOUNDMESSAGE_H
-#define AIR_CONDITIONING_UNIT_INBOUNDMESSAGE_H
+#pragma once
 
-namespace ACC::Controller::RemoteCommand {
+namespace ACC::Radio {
     /**
      * A class that represents and safely decodes an inbound message
      */
@@ -26,12 +25,12 @@ namespace ACC::Controller::RemoteCommand {
 
             unsigned char getCommand() const { return command; }
 
+            unsigned long getNounce() const { return nounce; }
+
             const unsigned char *getExtendedBytes() const { return extendedBytes; }
 
             unsigned char getExtendedBytesLength() const { return extendedBytesLength; }
 
-            bool isValid(unsigned long lastInputNounce) const;
+            bool isValid(unsigned long lastInboundNounce) const;
     };
 }
-
-#endif //AIR_CONDITIONING_UNIT_INBOUNDMESSAGE_H

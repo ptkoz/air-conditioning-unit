@@ -1,13 +1,10 @@
-#ifndef AIR_CONDITIONING_UNIT_RELAYHEATER_H
-#define AIR_CONDITIONING_UNIT_RELAYHEATER_H
+#pragma once
 
-#include <IRremoteInt.h>
 #include "Device.h"
-#include "Time/Source.h"
 
 namespace ACC::Devices {
     /**
-     * A heater controlled by a simple relay transmitter.
+     * A device implementation for a heater controlled by a simple relay transmitter.
      */
     class RelayHeater : public Device {
         private:
@@ -34,5 +31,3 @@ namespace ACC::Devices {
 
     };
 }
-
-#endif //AIR_CONDITIONING_UNIT_RELAYHEATER_H

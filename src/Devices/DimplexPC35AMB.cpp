@@ -13,9 +13,6 @@ DimplexPC35AMB::DimplexPC35AMB(unsigned char irPin, const Time::Source & timeSou
     timeSource(timeSource),
     lastTurnOffTimestamp(-turnOnGracePeriodSeconds),
     isTurnedOn(false) {
-        turnOff(); // After restart make sure device is turned off
-        delay(500);
-        turnOff(); // ... twice, just in case
 }
 
 bool DimplexPC35AMB::turnOn() {

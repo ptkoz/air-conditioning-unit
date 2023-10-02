@@ -1,22 +1,28 @@
-#ifndef AIR_CONDITIONING_UNIT_OUTBOUNDMESSAGE_H
-#define AIR_CONDITIONING_UNIT_OUTBOUNDMESSAGE_H
+#pragma once
 
-namespace ACC::Controller::RemoteCommand {
+namespace ACC::Radio {
     /**
      * A class that represents and safely encodes an outbound message
      */
     class OutboundMessage {
         private:
-            unsigned char * encodedBytes;
+            unsigned char *encodedBytes;
 
         public:
             OutboundMessage(
                 unsigned char from,
                 unsigned char to,
                 unsigned char command,
+                unsigned long nounce
+            ) : OutboundMessage(from, to, command, nounce, nullptr, 0) {}
+
+            OutboundMessage(
+                unsigned char from,
+                unsigned char to,
+                unsigned char command,
                 unsigned long nounce,
-                const void *extended = nullptr,
-                unsigned char extendedLength = 0
+                const void *extended,
+                unsigned char extendedLength
             );
 
             ~OutboundMessage();
@@ -30,5 +36,3 @@ namespace ACC::Controller::RemoteCommand {
             }
     };
 }
-
-#endif //AIR_CONDITIONING_UNIT_OUTBOUNDMESSAGE_H
