@@ -8,9 +8,10 @@ namespace ACC::Devices {
      */
     class RelayHeater : public Device {
         private:
+            unsigned char relayPin;
             bool isTurnedOn;
         public:
-            explicit RelayHeater();
+            explicit RelayHeater(unsigned char relayPin);
 
             /**
              * Turns the device on

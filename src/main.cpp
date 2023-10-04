@@ -9,18 +9,19 @@
 #define MASTER_ADDRESS 0x10U
 #define DIMPLEX_AC 0x30U
 #define RELAY_HEATER 0x31U
-#define VARIANT DIMPLEX_AC
+#define VARIANT RELAY_HEATER
 
 ACC::Time::Source timeSource;
 ACC::Security::NounceProvider nounceProvider;
-ACC::Radio::Radio radio(Serial, 2, VARIANT, nounceProvider); // NOLINT(*-interfaces-global-init)
 
 #if VARIANT == DIMPLEX_AC
     #include "Devices/DimplexPC35AMB.h"
     ACC::Devices::DimplexPC35AMB device(3, timeSource);
+    ACC::Radio::Radio radio(Serial, 2, VARIANT, nounceProvider); // NOLINT(*-interfaces-global-init)
 #elif VARIANT == RELAY_HEATER
     #include "Devices/RelayHeater.h"
-    ACC::Devices::RelayHeater device;
+    ACC::Devices::RelayHeater device(9);
+    ACC::Radio::Radio radio(Serial, 8, VARIANT, nounceProvider); // NOLINT(*-interfaces-global-init)
 #endif
 
 ACC::Controller::PingController pingController(timeSource, radio, device, MASTER_ADDRESS, 0x01U);
